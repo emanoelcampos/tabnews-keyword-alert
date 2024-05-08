@@ -1,6 +1,6 @@
 # Tabnews Alert
 
-Tabnews Alert is a Python-based project that automatically fetches data from the Tabnews API, filters posts titles based on specific keywords, and sends an email alert with the posts. The main purpose of this project is to automate the process of monitoring Tabnews for specific content and alerting the user when such content is published.
+[Tabnews](https://www.tabnews.com.br/) Alert is a Python-based project that automatically fetches data from the Tabnews API, filters posts titles based on specific keywords, and sends an email alert with the posts. The main purpose of this project is to automate the process of monitoring Tabnews for specific content and alerting the user when such content is published.
 
 ## Technologies Used
 
