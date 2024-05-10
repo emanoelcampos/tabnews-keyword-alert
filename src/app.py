@@ -64,7 +64,7 @@ def format_email_data(post_title_link):
     for title, link in post_title_link.items():
         html_title_link += f'<li style="margin-bottom: 10px;"><a href="{link}"style="color: #007bff; text-decoration: none; font-size: larger">{title}</a></li>'
 
-    with open("./templates/email_template.html", "r", encoding="utf-8") as file:
+    with open("templates/email_template.html", "r", encoding="utf-8") as file:
         html_template = file.read()
 
     html_content = html_template.replace("{html_post}", html_title_link)
