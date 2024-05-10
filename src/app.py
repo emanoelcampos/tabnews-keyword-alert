@@ -7,7 +7,7 @@ from email.mime.text import MIMEText
 import requests
 from dotenv import load_dotenv
 
-from src.posts import Posts
+from posts import Posts
 
 
 def get_api_data(page):
