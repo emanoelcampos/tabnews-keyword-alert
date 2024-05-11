@@ -1,1 +1,1 @@
-bot: python src/app.py
+clock: python src/scheduler.py
