@@ -8,6 +8,9 @@ import requests
 from dotenv import load_dotenv
 
 from posts import Posts
+from logger import setup_logger
+
+logger = setup_logger()
 
 
 def get_api_data(page):
@@ -19,6 +22,7 @@ def get_api_data(page):
     }
 
     response = requests.get(api_url, params=parameters)
+    logger.info(f"API response: {response.status_code}.")
     return response.json()
 
 
@@ -38,6 +42,8 @@ def filter_posts_by_previous_day():
             break
         else:
             page += 1
+
+    logger.info(f"Filtered posts from yesterday: {len(previous_day_posts)}.")
     return previous_day_posts
 
 
@@ -53,7 +59,10 @@ def format_post_title_link(posts_with_keywords):
     tabnews_url = "https://www.tabnews.com.br"
     post_title_link = {}
     if not posts_with_keywords:
+        logger.info("No posts from yesterday with the keywords.")
         sys.exit()
+    else:
+        logger.info(f"Yesterday's posts found with keyword: {len(posts_with_keywords)}.")
     for id_, post in posts_with_keywords.items():
         post_title_link[post.title] = f'{tabnews_url}/{post.owner_username}/{post.slug}'
     return post_title_link
@@ -73,29 +82,33 @@ def format_email_data(post_title_link):
 
 def send_alert(html_content):
     load_dotenv()
+    try:
+        smtp_port = 587
+        smtp_server = 'smtp.gmail.com'
+        smtp_username = os.environ['FROM']
+        smtp_name_from = os.environ['NAME_FROM']
+        smtp_password = os.environ['PASSWORD']
+        smtp_to = os.environ['TO']
 
-    smtp_port = 587
-    smtp_server = 'smtp.gmail.com'
-    smtp_username = os.environ['FROM']
-    smtp_name_from = os.environ['NAME_FROM']
-    smtp_password = os.environ['PASSWORD']
-    smtp_to = os.environ['TO']
+        message = MIMEMultipart()
+        message['Subject'] = 'Alerta de Conteúdo no Tabnews!'
+        message['From'] = f'{smtp_name_from} <{smtp_username}>'
+        message['To'] = smtp_to
+        message.attach(MIMEText(html_content, 'html'))
 
-    message = MIMEMultipart()
-    message['Subject'] = 'Alerta de Conteúdo no Tabnews!'
-    message['From'] = f'{smtp_name_from} <{smtp_username}>'
-    message['To'] = smtp_to
-    message.attach(MIMEText(html_content, 'html'))
+        with smtplib.SMTP(smtp_server, smtp_port) as server:
+            server.starttls()
+            server.login(smtp_username, smtp_password)
+            server.sendmail(smtp_username, smtp_to, message.as_string())
+            server.quit()
+        logger.info("Email sent successfully.")
 
-    with smtplib.SMTP(smtp_server, smtp_port) as server:
-        server.starttls()
-        server.login(smtp_username, smtp_password)
-        server.sendmail(smtp_username, smtp_to, message.as_string())
-        server.quit()
+    except Exception as e:
+        logger.error(f"Error sending email: {str(e)}")
 
 
 def main():
-    keywords = ['RPA', 'Automação', 'Python']
+    keywords = ['RPA', 'Automação', 'Python', 'Análise de Negócios', 'Bot', 'como', 'que']
 
     previous_day_posts = filter_posts_by_previous_day()
     posts_with_keywords = filter_post_by_keywords(previous_day_posts, keywords)
