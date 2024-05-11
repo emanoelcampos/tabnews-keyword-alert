@@ -1,4 +1,4 @@
 .venv
 .env
-.idea!
-start_scheduler.bat
+.idea
+/src/images/
