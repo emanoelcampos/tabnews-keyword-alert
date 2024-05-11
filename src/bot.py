@@ -108,7 +108,7 @@ def send_alert(html_content):
 
 
 def main():
-    keywords = ['RPA', 'Automação', 'Python', 'Análise de Negócios', 'Bot', 'como', 'que']
+    keywords = ['RPA', 'Automação', 'Python', 'Análise de Negócios', 'Bot', 'Script']
 
     previous_day_posts = filter_posts_by_previous_day()
     posts_with_keywords = filter_post_by_keywords(previous_day_posts, keywords)
